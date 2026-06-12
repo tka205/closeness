@@ -89,23 +89,35 @@ export function Banner({ children, onDismiss }: { children: ReactNode; onDismiss
   );
 }
 
-/* Tiny dependency-free SVG bar chart (keeps the bundle small on purpose). */
+/* Tiny dependency-free SVG bar chart (keeps the bundle small on purpose).
+   Bars live in a stretch-to-fit SVG; labels live in an HTML row below it so
+   text renders at true pixel size and never distorts. */
 export function Bars({ data, labels, height = 120, color = "var(--accent)" }:
   { data: number[]; labels: string[]; height?: number; color?: string }) {
   const max = Math.max(1, ...data);
   const bw = 100 / Math.max(1, data.length);
+  const showLabel = (i: number) =>
+    labels.length <= 6 || i % 2 === (labels.length - 1) % 2; // thin out, always keep the last
   return (
-    <svg width="100%" height={height + 22} viewBox={`0 0 100 ${height + 22}`} preserveAspectRatio="none" role="img">
-      {data.map((v, i) => {
-        const h = (v / max) * (height - 6);
-        return (
-          <g key={i}>
-            <rect x={i * bw + bw * 0.15} y={height - h} width={bw * 0.7} height={Math.max(1, h)} rx={1.5}
+    <div>
+      <svg width="100%" height={height} viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" role="img">
+        {data.map((v, i) => {
+          const h = (v / max) * (height - 6);
+          return (
+            <rect key={i} x={i * bw + bw * 0.15} y={height - h} width={bw * 0.7} height={Math.max(1, h)} rx={1.5}
               fill={color} opacity={0.35 + 0.65 * (v / max)} />
-            <text x={i * bw + bw / 2} y={height + 14} textAnchor="middle" fontSize="6" fill="var(--ink-muted)">{labels[i]}</text>
-          </g>
-        );
-      })}
-    </svg>
+          );
+        })}
+      </svg>
+      <div style={{ display: "flex", marginTop: 4 }}>
+        {labels.map((l, i) => (
+          <span key={i} style={{
+            flex: 1, textAlign: "center", fontSize: 10, color: "var(--ink-muted)",
+            overflow: "hidden", whiteSpace: "nowrap" }}>
+            {showLabel(i) ? l : ""}
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }
