@@ -1,0 +1,215 @@
+/* Closeness design tokens — locked.
+   Direction: a private evening training journal. Quiet, warm, dark.
+   Type: ui-serif display (New York on iOS) / ui-sans body (SF) — system
+   faces only: zero font network calls (privacy + speed), and the serif
+   display gives the journal register. Signature element: concentric
+   depth rings (the 1–5 depth scale as the app's identity). Boldness is
+   spent there; everything else stays disciplined. */
+
+:root {
+  /* color */
+  --bg: #0e0e0e;
+  --surface: #171614;
+  --surface-2: #201e1b;
+  --line: #2c2a26;
+  --ink: #ece8e2;
+  --ink-muted: #8a857d;
+  --accent: #d9a441;        /* amber: evening-warm, never blue */
+  --accent-soft: #d9a44126; /* 15% amber for fills */
+  --danger: #c4564a;
+  --ok: #7da27c;
+
+  /* type */
+  --font-display: ui-serif, "New York", Georgia, serif;
+  --font-body: -apple-system, ui-sans-serif, "SF Pro Text", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  /* space */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+
+  /* shape */
+  --radius: 12px;
+  --radius-lg: 20px;
+
+  /* safe areas (iOS notch / home bar) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+h1 { font-size: var(--text-2xl); }
+h2 { font-size: var(--text-xl); }
+h3 { font-size: var(--text-lg); }
+
+a { color: var(--accent); text-decoration: none; }
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+input, textarea, select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s3) var(--s4);
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* layout primitives */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--safe-top);
+}
+
+.screen {
+  flex: 1;
+  padding: var(--s5) var(--s4) calc(72px + var(--safe-bottom));
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--s5);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s2);
+  background: var(--accent);
+  color: #141005;
+  font-weight: 600;
+  border-radius: var(--radius);
+  padding: var(--s3) var(--s5);
+  min-height: 48px; /* thumb-sized: logging speed is an adherence feature */
+}
+
+.btn-quiet {
+  background: var(--surface-2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.muted { color: var(--ink-muted); }
+.small { font-size: var(--text-sm); }
+
+/* bottom tab bar */
+.tabbar {
+  position: fixed;
+  inset: auto 0 0 0;
+  display: flex;
+  justify-content: space-around;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--line);
+  padding: var(--s2) 0 calc(var(--s2) + var(--safe-bottom));
+}
+
+.tabbar a {
+  color: var(--ink-muted);
+  font-size: var(--text-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--s2) var(--s4);
+  border-radius: var(--radius);
+}
+
+.tabbar a.active { color: var(--accent); }
+
+/* signature: depth rings */
+.rings {
+  display: block;
+  margin: 0 auto;
+}
+.rings circle { transition: opacity 240ms ease, stroke 240ms ease; }
+
+/* sync status chip */
+.sync-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--text-xs);
+  color: var(--ink-muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px var(--s3);
+}
+.sync-chip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+.sync-chip.pending::before { background: var(--accent); }
+.sync-chip.offline::before { background: var(--ink-muted); }
